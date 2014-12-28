@@ -10,6 +10,9 @@ RUN apt-get update && apt-get -y upgrade
 ## Install CrashPlan dependencies
 RUN apt-get -y install expect openjdk-7-jre-headless wget
 
+## Increase max file watches
+ADD /files/60-max-user-watches.conf /etc/sysctl.d/60-max-user-watches.conf
+
 ## Create tmp folder
 RUN mkdir /tmp/crashplan
 
@@ -26,9 +29,6 @@ RUN cd /tmp/crashplan && ./crashplan.exp && cd /
 
 ## Enable service port forwarding
 RUN /usr/local/crashplan/bin/CrashPlanEngine start; sleep 2
-
-## Increase max file watches
-ADD /files/60-max-user-watches.conf /etc/sysctl.d/60-max-user-watches.conf
 
 ## Add run file
 ADD /files/run.sh /run.sh
