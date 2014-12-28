@@ -6,7 +6,7 @@ Docker container for Crashplan backup service.
 
 ### Running the container
 
-    docker run -d -p 4242:4242 -p 4243:4243 -v /usr/local/var/crashplan --name CrashPlan phlak/crashplan
+    docker run -d -p 4242:4242 -p 127.0.0.1:4243:4243 -v /usr/local/var/crashplan --name CrashPlan phlak/crashplan
 
 
 -----

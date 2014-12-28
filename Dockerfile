@@ -24,6 +24,9 @@ RUN chmod +x /tmp/crashplan/crashplan.exp
 ## Install CrashPlan
 RUN cd /tmp/crashplan && ./crashplan.exp && cd /
 
+## Enable service port forwarding
+RUN sed -i 's|\(<serviceHost>\)\(127.0.0.1\)\(</serviceHost>\)|\10.0.0.0\3|g' /usr/local/crashplan/conf/my.service.xml
+
 ## Add run file
 ADD /files/run.sh /run.sh
 RUN chmod +x /run.sh
