@@ -1,6 +1,9 @@
 FROM ubuntu:14.04
 MAINTAINER Chris Kankiewicz <Chris@ChrisKankiewicz.com>
 
+## CrashPlan version
+ENV VERSION 3.6.4
+
 ## Perform apt update / upgrade
 RUN apt-get update && apt-get -y upgrade
 
@@ -9,9 +12,6 @@ RUN apt-get -y install expect openjdk-7-jre-headless wget
 
 ## Create tmp folder
 RUN mkdir /tmp/crashplan
-
-## CrashPlan version
-ENV VERSION 3.6.4
 
 ## Download and extract CrashPlan archive
 RUN wget -O- http://download.code42.com/installs/linux/install/CrashPlan/CrashPlan_${VERSION}_Linux.tgz \
