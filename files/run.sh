@@ -1,10 +1,27 @@
 #! /usr/bin/env bash
 set -o errexit -o pipefail
 
-## Set pidfile path
-PID_FILE="/usr/local/crashplan/CrashPlanEngine.pid"
+## CrashPlan root path
+CRASHPLAN_PATH="/usr/local/crashplan"
 
-## Proxy signals
+## Set file paths
+PID_FILE="${CRASHPLAN_PATH}/CrashPlanEngine.pid"
+SERVICE_FILE="${CRASHPLAN_PATH}/conf/my.service.xml"
+
+## Get serviceHost line info
+SERVICE_HOST="$(grep -n '<serviceHost>127.0.0.1</serviceHost>' ${SERVICE_FILE})"
+
+## Expose service port
+if [[ ! -z "${SERVICE_HOST}" ]]; then
+
+    LINE="$(echo ${SERVICE_HOST} | awk -F : '{print $1}')"
+
+    echo "Exposing service port to host"
+    sed -i "${LINE}s/127.0.0.1/0.0.0.0/g" ${SERVICE_FILE}
+
+fi
+
+## Kill crashplan
 function killCrashplan(){
     kill $(cat ${PID_FILE}); exit 0
 }

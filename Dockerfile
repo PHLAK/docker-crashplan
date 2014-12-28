@@ -26,7 +26,6 @@ RUN cd /tmp/crashplan && ./crashplan.exp && cd /
 
 ## Enable service port forwarding
 RUN /usr/local/crashplan/bin/CrashPlanEngine start; sleep 2
-RUN sed -i 's|\(<serviceHost>\)\(127.0.0.1\)\(</serviceHost>\)|\10.0.0.0\3|g' /usr/local/crashplan/conf/my.service.xml
 
 ## Increase max file watches
 ADD /files/60-max-user-watches.conf /etc/sysctl.d/60-max-user-watches.conf
