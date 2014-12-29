@@ -30,7 +30,7 @@ function killCrashplan(){
 trap 'killCrashplan' SIGINT SIGTERM
 
 ## Launch daemon
-/usr/local/crashplan/bin/CrashPlanEngine start; sleep 2
+${CRASHPLAN_PATH}/bin/CrashPlanEngine start; sleep 2
 
 ## Loop while the pidfile and the process exist
 while [[ -f ${PID_FILE} ]] && kill -0 $(cat ${PID_FILE}); do
