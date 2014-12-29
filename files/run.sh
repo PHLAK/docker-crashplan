@@ -27,7 +27,7 @@ function killCrashplan(){
 }
 
 ## Set trap
-trap "kill_app" SIGINT SIGTERM
+trap 'killCrashplan' SIGINT SIGTERM
 
 ## Launch daemon
 /usr/local/crashplan/bin/CrashPlanEngine start; sleep 2

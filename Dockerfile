@@ -28,8 +28,8 @@ RUN chmod +x /tmp/crashplan/crashplan.exp
 RUN cd /tmp/crashplan && ./crashplan.exp && cd /
 
 ## Run CrashPlan once to generate files
-RUN /usr/local/crashplan/bin/CrashPlanEngine start; sleep 2
-RUN /usr/local/crashplan/bin/CrashPlanEngine stop; sleep 2
+RUN /usr/local/crashplan/bin/CrashPlanEngine start && sleep 2 \
+    && /usr/local/crashplan/bin/CrashPlanEngine stop; sleep 2
 
 ## Add service override file
 ADD /files/crashplan.override /etc/init/crashplan.override
