@@ -1,51 +1,49 @@
-FROM ubuntu:14.04
+FROM alpine:3.6
 MAINTAINER Chris Kankiewicz <Chris@ChrisKankiewicz.com>
 
-## CrashPlan version
-ENV VERSION 3.6.4
+# CrashPlan version
+ARG CP_VERSION=4.8.2
 
-## Perform apt update / upgrade
-RUN apt-get update && apt-get -y upgrade
+# Set tarball file URL
+ARG TARBALL_URL=http://download.code42.com/installs/linux/install/CrashPlan/CrashPlan_${CP_VERSION}_Linux.tgz
 
-## Install CrashPlan dependencies
-RUN apt-get -y install expect openjdk-7-jre-headless wget
+# Create non-root user
+# RUN adduser -DHs /sbin/nologin crashplan
 
-## Increase max file watches
-ADD /files/60-max-user-watches.conf /etc/sysctl.d/60-max-user-watches.conf
+# Create CrashPlan directory
+RUN mkdir -p /tmp/crashplan
 
-## Create tmp folder
-RUN mkdir /tmp/crashplan
-
-## Download and extract CrashPlan archive
-RUN wget -O- http://download.code42.com/installs/linux/install/CrashPlan/CrashPlan_${VERSION}_Linux.tgz \
-    | tar -xz --strip-components=1 -C /tmp/crashplan
-
-## Install expect script
-ADD /files/crashplan.exp /tmp/crashplan/crashplan.exp
+# Install expect script
+COPY /files/crashplan.exp /tmp/crashplan/crashplan.exp
 RUN chmod +x /tmp/crashplan/crashplan.exp
 
-## Install CrashPlan
+# Install dependencies and fet CrashPlan tarball
+RUN apk add --no-cache --update bash ca-certificates coreutils cpio expect tar tzdata wget \
+    # && wget -qO- ${TARBALL_URL} | tar -xz --strip-components=1 -C /tmp/crashplan
+    && wget -qO- ${TARBALL_URL} | tar -xzO --strip-components=1 crashplan-install/CrashPlan_${CP_VERSION}.cpi \
+    | cpio --extract --no-preserve-owner --verbose \
+    && rm /var/cache/apk/*
+
+# RUN gunzip -c CrashPlan_4.8.2.cpi
+
+# Install CrashPlan
 RUN cd /tmp/crashplan && ./crashplan.exp && cd /
 
-## Run CrashPlan once to generate files
-RUN /usr/local/crashplan/bin/CrashPlanEngine start && sleep 2 \
-    && /usr/local/crashplan/bin/CrashPlanEngine stop; sleep 2
+# Run CrashPlan once to generate files
+# RUN /usr/local/crashplan/bin/CrashPlanEngine start && sleep 2 \
+#     && /usr/local/crashplan/bin/CrashPlanEngine stop; sleep 2
 
-## Add service override file
-ADD /files/crashplan.override /etc/init/crashplan.override
+# Add run file
+# ADD /files/run.sh /run.sh
+# RUN chmod +x /run.sh
 
-## Add run file
-ADD /files/run.sh /run.sh
-RUN chmod +x /run.sh
+# Define volumes
+VOLUME /vol/crashplan
 
-## Perform apt cleanup
-RUN apt-get -y autoremove && apt-get -y clean && apt-get -y autoclean
-
-## Define volumes
-VOLUME /usr/local/var/crashplan
-
-## Expose ports
+# Expose ports
 EXPOSE 4242 4243
 
-## Default command
+WORKDIR /opt/crashplan
+
+# Default command
 CMD ["/run.sh"]

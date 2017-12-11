@@ -13,12 +13,10 @@ SERVICE_HOST="$(grep -n '<serviceHost>127.0.0.1</serviceHost>' ${SERVICE_FILE})"
 
 ## Expose service port
 if [[ ! -z "${SERVICE_HOST}" ]]; then
-
     LINE="$(echo ${SERVICE_HOST} | awk -F : '{print $1}')"
 
     echo "Exposing service port to host"
     sed -i "${LINE}s/127.0.0.1/0.0.0.0/g" ${SERVICE_FILE}
-
 fi
 
 ## Kill crashplan

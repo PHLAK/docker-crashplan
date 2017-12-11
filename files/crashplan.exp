@@ -1,39 +1,32 @@
 #!/usr/bin/env expect
 
-spawn "./install.sh"
+set timeout 120
+
+spawn "/tmp/crashplan/install.sh"
 
 expect "Press enter to continue with installation."
 send "\r"
 
-expect "Press enter to read the EULA."
-send "\r"
-
-expect "More"
-send ":n"
-
-expect "Do you accept and agree to be bound by the EULA?"
-send "yes\r"
-
 expect "What parent directory do you wish to install CrashPlan into?"
-send "/usr/local\r"
+send "/opt\r"
 
-expect "/usr/local/crashplan does not exist.  Create /usr/local/crashplan?"
+expect "/opt/crashplan does not exist.  Create /opt/crashplan?"
 send "y\r"
 
 expect "What directory do you wish to link the CrashPlan executable to?"
 send "/usr/local/bin\r"
 
-expect "What directory do you wish to store backups in?"
-send "/srv/crashplan\r"
+expect "What directory do you wish to store incoming backup data?"
+send "/vol/crashplan\r"
 
-expect "/srv/crashplan does not exist.  Create /srv/crashplan?"
+expect "/vol/crashplan does not exist.  Create /vol/crashplan?"
 send "y\r"
 
 expect "What directory contains your SYSV init scripts?"
-send "/etc/init.d\r"
+send "/dev/shm\r"
 
 expect "What directory contains your runlevel init links?"
-send "/etc/rc2.d\r"
+send "/dev/shm\r"
 
 expect "Is this correct?"
 send "y\r"
